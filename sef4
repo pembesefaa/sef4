@@ -1,0 +1,48 @@
+
+gini_without=decision_try_gini(x_train,y_train,x_test,y_test)
+gini_minmax=decision_try_gini(m_x_train,y_train,m_x_test,y_test)
+gini_standart=decision_try_gini(s_x_train,y_train,s_x_test,y_test)
+
+
+###############EXTRA ÇALIŞMAAAA
+
+
+import seaborn as sns
+
+df=sns.load_dataset("iris")
+x=df.iloc[:,0:4].values
+y=df.iloc[:,4:5].values
+
+
+
+
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=132,test_size=0.33)
+
+#Standart Scaler
+ss=StandardScaler()
+s_x_train=ss.fit_transform(x_train)
+s_x_test=ss.transform(x_test)
+
+#Minmax Scaler
+mm=MinMaxScaler()
+m_x_train=mm.fit_transform(x_train)
+m_x_test=mm.transform(x_test)
+
+
+
+def decision_try_gini(x1,y1,x2,y2):
+    dtc_f=DecisionTreeClassifier()
+    dtc_f.fit(x1,y1)
+    pred_f=dtc_f.predict(x2)
+    print(confusion_matrix(y2, pred_f))
+    print(classification_report(y2, pred_f))
+    a = precision_recall_fscore_support(y2, pred_f, average="macro")
+    a = list(a)
+    a[3] = accuracy_score(y2, pred_f)
+    return a
+
+sup_gini_without=decision_try_gini(x_train,y_train,x_test,y_test)
+sup_gini_standart=decision_try_gini(s_x_train,y_train,s_x_test,y_test)
+sup_gini_minmax=decision_try_gini(m_x_train,y_train,m_x_test,y_test)
+
